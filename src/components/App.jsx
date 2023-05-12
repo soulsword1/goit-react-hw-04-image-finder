@@ -1,14 +1,26 @@
 import { AppDiv } from './App.styled';
-import Searchbar from './Searchbar';
+import { Component } from 'react';
+import { Searchbar } from './Searchbar';
+import { ImageGallery } from './ImageGallery';
 
-export const App = () => {
+export class App extends Component{
 
-  const key = '7874354-517214212a7de5151c1e37373'
-  const url = `https://pixabay.com/api/?key=${key}&q=yellow+flowers&image_type=photo`;
-  fetch(url).then( response => response.json).then(data => console.log(data)).catch(error => console.log(error));
-  return (
-    <AppDiv>
-      <Searchbar />
-    </AppDiv>
-  );
+  state = {
+    imageToSearch: null,
+  }
+
+  handleFormSubmit = imageToSearch => this.setState({ imageToSearch });
+  
+  render(){
+    const { imageToSearch } = this.state;
+    return (
+      <AppDiv>
+        <Searchbar onSubmit={this.handleFormSubmit}/>
+        <ImageGallery imageToSearch={imageToSearch}/>
+      </AppDiv>
+    );
+  }
 };
+
+
+

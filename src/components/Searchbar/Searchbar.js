@@ -6,13 +6,18 @@ import {
   SearchFormInput,
 } from './Searchbar.styled';
 
-export default function Searchbar() {
+export function Searchbar({ onSubmit }) {
+  const onSearch = e => {
+    e.preventDefault();
+    onSubmit(e.target.search.value);
+  };
+
   return (
     <SearchbarContainer>
-      <SearchForm>
+      <SearchForm onSubmit={onSearch}>
         <SearchFormBtnLabel />
         <SearchFormBtn />
-        <SearchFormInput />
+        <SearchFormInput name="search" />
       </SearchForm>
     </SearchbarContainer>
   );
