@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   ImageGalleryLi,
   ImageGalleryItemImage,
@@ -32,4 +33,9 @@ export class ImageGalleryItem extends Component {
       </>
     );
   }
+}
+
+ImageGalleryItem.propTypes = {
+  largeImageURL: PropTypes.string.isRequired,
+  webformatURL: PropTypes.string.isRequired,
 }

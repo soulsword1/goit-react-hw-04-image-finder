@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { FetchPixabayApi } from '../services/FetchPixabayApi';
 import { ImageGalleryList } from './ImageGallery.styled';
 import { ImageGalleryItem } from '../ImageGalleryItem';
@@ -31,7 +32,7 @@ export class ImageGallery extends Component {
     }, 1000);
   };
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (prevProps.imageToSearch !== this.props.imageToSearch) {
       const imageToSearch = this.props.imageToSearch;
       const page = 1;
@@ -59,9 +60,14 @@ export class ImageGallery extends Component {
               />
             ))}
         </ImageGalleryList>
+        {state === 'error' && <p>Images not found</p>}
         {state === 'pending' && <Loader />}
         {images && <Button onBtnClick={this.onBtnClick} />}
       </>
     );
   }
+}
+
+ImageGallery.propTypes = {
+  imageToSearch: PropTypes.string,
 }
