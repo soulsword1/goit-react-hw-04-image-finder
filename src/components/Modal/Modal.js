@@ -38,4 +38,5 @@ export class Modal extends Component {
 
 Modal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
 }
