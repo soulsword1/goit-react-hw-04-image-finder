@@ -16,8 +16,7 @@ export class ImageGallery extends Component {
   };
 
   onBtnClick = () => {
-    const page = this.state.page + 1;
-    this.setState({ page });
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   async componentDidUpdate(prevProps, prevState) {
