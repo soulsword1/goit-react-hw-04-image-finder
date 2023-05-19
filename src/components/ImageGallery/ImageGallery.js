@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FetchPixabayApi } from '../../services/FetchPixabayApi';
 import { ImageGalleryList } from './ImageGallery.styled';
@@ -6,72 +6,59 @@ import { ImageGalleryItem } from '../ImageGalleryItem';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
 
-export class ImageGallery extends Component {
-  state = {
-    page: 1,
-    imageToSearch: null,
-    images: null,
-    error: null,
-    state: 'idle',
-  };
+export function ImageGallery({ imageToSearch }) {
+  const [page, setPage] = useState(1);
+  const [images, setImages] = useState(null);
+  const [error, setError] = useState(null);
+  const [state, setState] = useState('idle');
 
-  onBtnClick = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
+  const onBtnClick = () => setPage(state => state + 1);
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevProps.imageToSearch !== this.props.imageToSearch) {
-      this.setState({ images: [] });
-      const imageToSearch = this.props.imageToSearch;
+  useEffect(() => {
+    if (imageToSearch) {
+      setImages([]);
       const page = 1;
-      this.setState({ imageToSearch, page, state: 'pending' });
+      setPage(page);
+      setState('pending');
       setTimeout(() => {
         FetchPixabayApi(imageToSearch, page)
-          .then(data => this.setState({ images: data.hits }))
-          .catch(error => this.setState({ error }));
-        this.setState({ state: 'idle' });
+          .then(data => setImages(data.hits))
+          .catch(error => setError(error));
+        setState('idle');
       }, 1000);
     }
+  }, [imageToSearch]);
 
-    if (prevState.page !== this.state.page && this.state.page !== 1) {
-      const imageToSearch = this.props.imageToSearch;
-      const page = this.state.page;
-      const state = 'pending';
-      this.setState({ state });
+  useEffect(() => {
+    if (page > 1) {
+      setState('pending');
       setTimeout(() => {
         FetchPixabayApi(imageToSearch, page)
-          .then(data =>
-            this.setState(prevState => ({
-              images: [...prevState.images, ...data.hits],
-            }))
-          )
-          .catch(error => this.setState({ error }));
-        this.setState({ state: 'idle' });
+          .then(data => setImages(state => [...state, ...data.hits]))
+          .catch(error => setError(error));
+        setState('idle');
       }, 1000);
     }
-  }
+  }, [imageToSearch, page]);
 
-  render() {
-    const { images, state } = this.state;
-    return (
-      <>
-        {images && (
-          <ImageGalleryList>
-            {images.map(({ id, webformatURL, largeImageURL }) => (
-              <ImageGalleryItem
-                key={id}
-                webformatURL={webformatURL}
-                largeImageURL={largeImageURL}
-              />
-            ))}
-          </ImageGalleryList>
-        )}
-        {state === 'error' && <p>Images not found</p>}
-        {state === 'pending' && <Loader />}
-        {state === 'idle' && images && <Button onBtnClick={this.onBtnClick} />}
-      </>
-    );
-  }
+  return (
+    <>
+      {images && (
+        <ImageGalleryList>
+          {images.map(({ id, webformatURL, largeImageURL }) => (
+            <ImageGalleryItem
+              key={id}
+              webformatURL={webformatURL}
+              largeImageURL={largeImageURL}
+            />
+          ))}
+        </ImageGalleryList>
+      )}
+      {state === 'error' && <p>Images not found</p>}
+      {state === 'pending' && <Loader />}
+      {state === 'idle' && images && <Button onBtnClick={onBtnClick} />}
+    </>
+  );
 }
 
 ImageGallery.propTypes = {

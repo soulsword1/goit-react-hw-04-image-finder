@@ -1,26 +1,17 @@
 import { AppDiv } from './App.styled';
-import { Component } from 'react';
+import { useState } from 'react';
 import { Searchbar } from './Searchbar';
 import { ImageGallery } from './ImageGallery';
 
-export class App extends Component{
+export function App() {
+  const [imageToSearch, setImageToSearch] = useState(null);
 
-  state = {
-    imageToSearch: null,
-  }
+  const handleFormSubmit = imageToSearch => setImageToSearch(imageToSearch);
 
-  handleFormSubmit = imageToSearch => this.setState({ imageToSearch });
-  
-  render(){
-    const { imageToSearch } = this.state;
-    return (
-      <AppDiv>
-        <Searchbar onSubmit={this.handleFormSubmit}/>
-        <ImageGallery imageToSearch={imageToSearch}/>
-      </AppDiv>
-    );
-  }
-};
-
-
-
+  return (
+    <AppDiv>
+      <Searchbar onSubmit={handleFormSubmit} />
+      <ImageGallery imageToSearch={imageToSearch} />
+    </AppDiv>
+  );
+}
