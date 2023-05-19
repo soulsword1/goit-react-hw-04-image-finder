@@ -6,7 +6,6 @@ import { createPortal } from 'react-dom';
 const modalRoot = document.querySelector('#modal-root');
 
 export function Modal({ largeImageURL, toggleModal }) {
-
   const onClickBackdrop = e => {
     e.currentTarget === e.target && toggleModal();
   };
