@@ -9,7 +9,6 @@ import { Loader } from '../Loader';
 export function ImageGallery({ imageToSearch }) {
   const [page, setPage] = useState(1);
   const [images, setImages] = useState(null);
-  const [error, setError] = useState(null);
   const [state, setState] = useState('idle');
 
   const onBtnClick = () => setPage(state => state + 1);
@@ -23,7 +22,6 @@ export function ImageGallery({ imageToSearch }) {
       setTimeout(() => {
         FetchPixabayApi(imageToSearch, page)
           .then(data => setImages(data.hits))
-          .catch(error => setError(error));
         setState('idle');
       }, 1000);
     }
@@ -35,7 +33,6 @@ export function ImageGallery({ imageToSearch }) {
       setTimeout(() => {
         FetchPixabayApi(imageToSearch, page)
           .then(data => setImages(state => [...state, ...data.hits]))
-          .catch(error => setError(error));
         setState('idle');
       }, 1000);
     }

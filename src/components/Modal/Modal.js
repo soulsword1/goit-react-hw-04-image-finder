@@ -6,22 +6,23 @@ import { createPortal } from 'react-dom';
 const modalRoot = document.querySelector('#modal-root');
 
 export function Modal({ largeImageURL, toggleModal }) {
-  const handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      toggleModal();
-    }
-  };
 
   const onClickBackdrop = e => {
     e.currentTarget === e.target && toggleModal();
   };
 
   useEffect(() => {
+    const handleKeyDown = e => {
+      if (e.code === 'Escape') {
+        toggleModal();
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', this.handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [toggleModal]);
 
   return createPortal(
     <ModalOverlay onClick={onClickBackdrop}>
