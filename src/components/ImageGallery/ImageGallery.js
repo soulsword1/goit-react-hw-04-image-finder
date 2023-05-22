@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FetchPixabayApi } from '../../services/FetchPixabayApi';
 import { ImageGalleryList } from './ImageGallery.styled';
@@ -13,6 +13,16 @@ export function ImageGallery({ imageToSearch }) {
 
   const onBtnClick = () => setPage(state => state + 1);
 
+  const usePrevious = value => {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  };
+
+  const prevImage = usePrevious(imageToSearch);
+
   useEffect(() => {
     if (imageToSearch) {
       setImages([]);
@@ -20,23 +30,23 @@ export function ImageGallery({ imageToSearch }) {
       setPage(page);
       setState('pending');
       setTimeout(() => {
-        FetchPixabayApi(imageToSearch, page)
-          .then(data => setImages(data.hits))
+        FetchPixabayApi(imageToSearch, page).then(data => setImages(data.hits));
         setState('idle');
       }, 1000);
     }
   }, [imageToSearch]);
 
   useEffect(() => {
-    if (page > 1) {
+    if (page > 1 && imageToSearch === prevImage) {
       setState('pending');
       setTimeout(() => {
-        FetchPixabayApi(imageToSearch, page)
-          .then(data => setImages(state => [...state, ...data.hits]))
+        FetchPixabayApi(imageToSearch, page).then(data =>
+          setImages(state => [...state, ...data.hits])
+        );
         setState('idle');
       }, 1000);
     }
-  }, [imageToSearch, page]);
+  }, [imageToSearch, page, prevImage]);
 
   return (
     <>
